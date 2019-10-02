@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <style>
+        td {
+            cursor: pointer;
+        }
+    </style>
+    <script>
+        var OX = true;
+        /*function Change(a) {
+            var getelement = document.getElementById(a);
+            if (getelement.innerText != "_") return;
+            if (OX == true) {
+                getelement.innerText = "X";
+                OX = false;
+            }
+            else {
+                getelement.innerText = "O";
+                OX = true;
+            }
+        }*/
+
+        function Change(a) {
+            if (a.innerText != "_") return;
+            if (OX == true) {
+                a.innerText = "X";
+                OX = false;
+            }
+            else {
+                a.innerText = "O";
+                OX = true;
+            }
+        }
+    </script>
+    <title>Lab9</title>
+</head>
+
+<body>
+    <div>
+        <table border="1" style="border-radius: 5%; text-align: center; width: 250px; height: 250px; font-size: 150%">
+            <caption>OOXX</caption>
+            <!-- <tr>
+                <td id="1" onclick="Change(1)">_</td>
+                <td id="2" onclick="Change(2)">_</td>
+                <td id="3" onclick="Change(3)">_</td>
+            </tr>
+            <tr>
+                <td id="4" onclick="Change(4)">_</td>
+                <td id="5" onclick="Change(5)">_</td>
+                <td id="6" onclick="Change(6)">_</td>
+            </tr>
+            <tr>
+                <td id="7" onclick="Change(7)">_</td>
+                <td id="8" onclick="Change(8)">_</td>
+                <td id="9" onclick="Change(9)">_</td>
+            </tr> -->
+            <tr>
+                <td onclick="Change(this)">_</td>
+                <td onclick="Change(this)">_</td>
+                <td onclick="Change(this)">_</td>
+            </tr>
+            <tr>
+                <td onclick="Change(this)">_</td>
+                <td onclick="Change(this)">_</td>
+                <td onclick="Change(this)">_</td>
+            </tr>
+            <tr>
+                <td onclick="Change(this)">_</td>
+                <td onclick="Change(this)">_</td>
+                <td onclick="Change(this)">_</td>
+            </tr>
+        </table>
+    </div>
+</body>
+
+</html>
