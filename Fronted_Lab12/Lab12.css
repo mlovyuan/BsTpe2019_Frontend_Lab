@@ -1,0 +1,73 @@
+/* 1 */
+#height {
+    font-size: 20px;
+    line-height: 2.5em;
+  }
+ 
+#link:link {
+    text-decoration: none;
+  }
+ 
+#link:visited {
+    color: purple;
+  }
+ 
+#link:hover {
+    text-decoration: underline;
+  }
+ 
+#link:active {
+    color: rgb(16, 211, 201);
+  }
+ 
+ /* 2 */
+ #item1 li {
+    float: left;
+    margin-left: 25px;
+ }
+
+ #item2 li {
+    list-style-image: url("https://img.icons8.com/office/30/000000/elections.png");
+ }
+
+ /* 3 */
+ #div1{
+    border: 5px red double;
+ }
+
+ #div2 {
+    border : 3px blue solid;
+    border-left: medium dashed rgb(99, 192, 184);
+ }
+
+ /* 4 */
+ #div3{
+    border: 5px red double;
+    border-radius: 6%;
+ }
+
+ #div4 {
+    border : 3px blue solid;
+    border-left: medium dashed rgb(99, 192, 184);
+    border-radius: 10px 20px 30px 40px;
+ }
+
+/* 5 */
+#div5{
+    width:50%;
+    height:250px; 
+}
+#div5 img{
+    width:15%;
+    float: right;; 
+    border-radius: 10px;
+    margin: 10px
+ }
+
+ 
+ /* 6 */
+ #div6 {
+    width:200px;
+    height:250px; 
+    overflow: scroll;
+ }
