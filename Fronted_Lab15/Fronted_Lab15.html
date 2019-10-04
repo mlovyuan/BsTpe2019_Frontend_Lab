@@ -1,26 +1,28 @@
 <!DOCTYPE html>
 <html lang="zh-tw">
+
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
     <title>Lab15</title>
     <script>
-        function Caculate(){
+        function Caculate() {
             var height = document.getElementById("height").value;
             var weight = document.getElementById("weight").value;
             var BMI = document.getElementById("BMI");
-            BMI.innerText =  weight/((height/100)*(height/100));
+            BMI.innerText = weight / ((height / 100) * (height / 100));
         }
     </script>
 </head>
+
 <body>
     <div class="container">
-        <div class="col">
+        <div class="col-md-6">
             <label for="height">身高</label>
             <input type="text" name="" id="height" class="form-control">
             <label for="weight">體重</label>
             <input type="text" name="" id="weight" class="form-control">
-    
+
             <label for="BMI">結果:</label>
             <span id="BMI"></span>
             <br>
@@ -28,4 +30,5 @@
         </div>
     </div>
 </body>
+
 </html>
