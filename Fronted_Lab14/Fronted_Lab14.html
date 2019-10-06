@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+
+<head>
+    <meta charset="UTF-8">
+
+    <title>Lab14</title>
+    <script>
+        //getElementById(抓取頁面上的元素)
+        function getElement(name) {
+            return document.getElementById(name);
+        }
+
+        //判斷是否可以送件
+        function Button_Submit() {
+            //抓取頁面上的checkboc1，取得是否checked
+            var isChecked = getElement('MustCheck').checked;
+            //如果是，就return true
+            if (isChecked) return true;
+            //否則就... 
+            alert('必須勾選同意!');
+            return false;
+        }
+
+        //當網頁載入完成後執行
+        window.onload = function () {
+            //hook event(在form1被submit時...)
+            getElement('form1').onsubmit = function () {
+                //呼叫 Button_Submit()
+                return Button_Submit();
+            };
+        };
+    </script>
+
+</head>
+
+<body>
+    <form id="form1"
+        action="http://isbaas.azurewebsites.net/WebForms/Form2Mail.aspx?mailto=自己的EMAIL&redirect=http://www.google.com"
+        method="POST">
+
+        <fieldset>
+            <legend class="card-header bg-info text-white">個人資料--必填寫</legend>
+            <div>
+                <label class="card-title">姓名</label>
+                <input type="text" value="" id="your name" name="name input" class="form-control" />
+            </div>
+            <div>
+                <label>password:</label>
+                <input type="password" value="" id="fielPwd" name="password input" class="form-control" />
+            </div>
+            <div>
+                <label>性別</label>
+                <input type="radio" name="gender" value="男">男生
+                <input type="radio" name="gender" value="女">女生
+            </div>
+
+        </fieldset>
+        </div>
+
+        <fieldset>
+            <legend class="card-header bg-info text-white">個人資料--興趣和專長</legend>
+
+            <div>
+                <input type="checkbox" name="hobby" value="音樂">音樂
+                <input type="checkbox" name="hobby" value="運動">運動
+                <input type="checkbox" name="hobby" value="閱讀">閱讀
+                <input type="checkbox" name="hobby" value="踏青">踏青
+            </div>
+            <p>專長</p>
+            <textarea id="fieldMultiLineText" cols="40" rows="4" name="專長"></textarea>
+
+        </fieldset>
+
+        <fieldset>
+            <legend class="card-header bg-info text-white">個人資料--地址</legend>
+            <div>
+
+                <label>郵遞區號</label>
+                <input type="text" value="" id="your mailnum" name="mailnum" placeholder="111" class="form-control" />
+
+                <label>縣市</label>
+                <select name="LivingIn">
+
+                    <option value="台北市" selected>台北市</option>
+                    <option value="新北市">新北市</option>
+                    <option value="桃園市">桃園市</option>
+                    <option value="台中市">台中市</option>
+                </select>
+                <br>
+                <label>地址</label>
+                <input type="text" value="" id="your address" name="地址" placeholder="請輸入地址" class="form-control" />
+                <br>
+                <input type="checkbox" value="同意" id="MustCheck" name="同意" />
+                <label>是否同意使用個資</label>
+                <!-- <label class="form-check-label">
+                                        <input class="form-check-input" type="checkbox"> Remember me
+                                </label> -->
+                <br>
+
+                <button type="submit" value="submit" class="btn btn-primary">送出</button>
+                <button type="reset" class="btn btn-primary">清除</button>
+            </div>
+        </fieldset>
+    </form>
+</body>
+
+</html>
