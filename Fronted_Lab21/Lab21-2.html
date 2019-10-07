@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <style>
+        div.container>.row>div {
+            margin-top: 20px;
+        }
+    </style>
+    <script>
+        function show() {
+            // if($("#mycheck").prop("checked", false)){
+            //     $('#myModal').modal(); return;
+            // }
+            // document.getElementById("change").innerText = "已成功登入";
+            // $('#myModal').modal();
+
+            if (document.getElementById("mycheck").checked) {
+                document.getElementById("change").innerText = "已成功登入";
+                $('#myModal').modal();
+            }
+            else {
+                $('#myModal').modal();
+            }
+        }
+    </script>
+    <title>Lab21-2</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row align-items-center justify-content-center">
+            <div class="card border-success col-md-6 ">
+                <div class="card-header  text-center font-weight-bold">
+                    <legend>用戶註冊</legend>
+                </div>
+                <div class="card-body ">
+                    <div class="form-group">
+
+                        <label for="username" class="card-title">帳號</label>
+                        <input type="text" class="form-control"></input>
+                        <label for="pwd" class="card-title">密碼</label>
+                        <input type="password" class="form-control"></input>
+                        <label for="pwd" class="card-title">確認密碼</label>
+                        <input type="password" class="form-control"></input>
+                        <label for="pwd" class="card-title">e-mail</label>
+                        <input type="password" class="form-control"></input>
+                        <label for="pwd" class="card-title">生日</label>
+                        <input type="password" class="form-control"></input>
+                        <label for="pwd" class="card-title">學校/公司</label>
+                        <input type="password" class="form-control"></input>
+                    </div>
+                    <div class="form-group form-check">
+                        <label class="form-check-label">
+                            <input id="mycheck" class="form-check-input" type="checkbox" name="remember">我同意使用本系統與其<a href="">條款</a>
+                        </label>
+                    </div>
+                    <button type="button" class="btn btn-outline-info btn-block" onclick="show()">登入</button>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- ###################### -->
+
+    <div class="modal fade" id="myModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+    
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Modal Heading</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+    
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <span id="change">請勾選同意本系統使用</span>
+                    </div>
+    
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    </div>
+    
+                </div>
+            </div>
+        </div>
+</body>
+
+</html>
