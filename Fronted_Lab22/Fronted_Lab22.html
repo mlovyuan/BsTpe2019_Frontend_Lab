@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script>
+        function init() {
+            $("#Button1").click(function (e) {
+                var hieght = $('#textHeight').val();
+                var weight = $('#textWeight').val();
+                hieght = hieght / 100;
+                var BMI = weight / (hieght * hieght);
+                $('#result').html(BMI);
+                // $('#result').after(BMI);
+
+            });
+        }
+
+        //等同於JS的wondows.onload
+        //jqdocready
+        $(function () {
+            init();
+        });
+    </script>
+    <title>Lab22</title>
+</head>
+
+<body>
+    <div class="row" style="margin:10px">
+        <div class="col-6">
+            <h1>BMI計算(改成jQuery版本)</h1>
+            <label>身高:</label>
+            <input class="form-control" id="textHeight" placeholder="0" />
+            <label>體重:</label>
+            <input class="form-control" id="textWeight" placeholder="0" />
+            <br />
+            <button class="btn btn-primary" id="Button1">計算</button>
+            <br />
+            <span id="result"></span>
+        </div>
+    </div>
+</body>
+
+</html>
