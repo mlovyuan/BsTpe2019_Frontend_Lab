@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <style>
+        .row>div {
+            margin-top: 30px;
+        }
+
+        .col-md-2>button {
+            margin-bottom: 10px;
+            display: table;
+            width: auto;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+    <script>
+        function trans(source, result, language) {
+            $.ajax({
+                type: "post", //http verb
+                headers: {
+                    //http header
+                    "Ocp-Apim-Subscription-Key": "ab2df97575664cf4a0792561cb43f981",
+                    "Content-Type": "application/json"
+                },
+                url: `https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&to=${language}`,
+                data: JSON.stringify([{ "Text": source }]), //要翻譯的文字
+                dataType: "json",
+                success: function (response) {
+                    //呼叫遠端服務後的回傳結果
+                    $(`#${result}`).val(response[0].translations[0].text);
+                }
+            });
+        }
+
+        function leftB() {
+            trans($('#leftInput').val(), "rightInput", $('#rightOption').val());
+        }
+
+        function rightB() {
+            trans($('#rightInput').val(), "leftInput", $('#leftOption').val());
+        }
+
+        function clearB() { 
+            $('.card-body textarea').val("");
+         }
+        $(function () {
+            $("#leftButton").click(leftB);
+            $("#rightButton").click(rightB);
+            $("#clearButton").click(clearB);
+        });
+    </script>
+    <title>Lab27</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-5">
+                <div class="card text-center border-dark">
+                    <div class="card-header bg-info">
+                        <select id="leftOption" class="custom-select">
+                            <option value="zh-Hant" selected>繁中</option>
+                            <option value="en">英文</option>
+                            <option value="ja">日文</option>
+                            <option value="ko">韓文</option>
+                            <option value="th">泰文</option>
+                        </select>
+                    </div>
+                    <div class="card-body bg-light">
+                        <textarea class="form-control" name="" id="leftInput" cols="30" rows="5"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-2 ">
+                <button type="button" class="btn btn-primary" id="leftButton">翻譯(→)</button>
+                <button type="button" class="btn btn-primary" id="rightButton">翻譯(←)</button>
+                <button type="button" class="btn btn-primary" id="clearButton">清空兩邊</button>
+            </div>
+
+            <div class="col-md-5">
+                <div class="card text-center border-dark">
+                    <div class="card-header bg-info">
+                        <select id="rightOption" class="custom-select">
+                            <option value="zh-Hant">繁中</option>
+                            <option value="en" selected>英文</option>
+                            <option value="ja">日文</option>
+                            <option value="ko">韓文</option>
+                            <option value="th">泰文</option>
+                        </select>
+                    </div>
+                    <div class="card-body bg-light">
+                        <textarea class="form-control" name="" id="rightInput" cols="30" rows="5"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+
+
+
+</body>
+
+</html>

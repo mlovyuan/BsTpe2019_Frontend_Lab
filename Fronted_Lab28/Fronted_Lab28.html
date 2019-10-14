@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+        integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+        crossorigin="anonymous"></script>
+    <style>
+        @font-face {
+            font-family: TimeFont;
+            src: url('CursedTimerUlil-Aznm.ttf');
+        }
+
+        #time {
+            font-family: TimeFont;
+            font-size: xx-large;
+        }
+
+        .column-md-6 * {
+            margin-top: 15px;
+        }
+    </style>
+
+    <script>
+        function TimeStart() {
+            if($("#time").html() > 0){
+                Minus();
+                return;
+            }
+            else if ($("#input1").val() > 0) {
+                $("#time").html($("#input1").val());
+                Minus();
+                return;
+            }
+            $('.modal-body').text("Somethings get wrong!")
+            $("#myModal").modal();
+
+        }
+        function Minus() {
+            let t = $("#time").html();
+            if (t == 0) {
+                $("#myModal").modal();
+                return;
+            }
+            // console.log($("#time").html() - 1);
+            $("#time").html(t - 1);
+            repeat = setTimeout(Minus, 1000);
+        }
+
+        function TimeStop() {
+            clearTimeout(repeat); 
+        }
+
+        $(function () {
+            $('#start').click(TimeStart);
+            $('#stop').click(TimeStop);
+        });
+    </script>
+    <title>Lab27</title>
+</head>
+<div class="container">
+    <div class="column-md-6">
+        <input type="text" id="input1" class="form-control" placeholder="please type the limited second">
+        <button class="btn btn-primary" id="start">Start</button>
+        <button class="btn btn-primary" id="stop">Stop</button>
+        <div id="time"></div>
+    </div>
+</div>
+
+<!-- ###### -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Notification</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Time's up!
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<body>
+
+</body>
+
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPEhtml>
+    <html lang="en">
+
+    <head>
+        <title>Lab26(OOXX-final-類別版, 判斷輸贏-題目版)</title>
+        <style>
+            td {
+                text-align: center;
+                cursor: pointer;
+            }
+        </style>
+
+        <script>
+            class OOXX {
+                constructor() {
+                    /* 初始化 */
+                    this.record = [];
+                    this.record[0] = [ '', '', ''];
+                    this.record[1] = [ '', '', ''];
+                    this.record[2] = [ '', '', ''];
+                }
+
+                setPoint(x, y, point) {
+                    /* todo */
+                    //設定落子
+                    this.record[x][y] = point;
+                }
+
+                HasWinner() {
+                    /* 判斷勝利者 */
+                    var i;
+                    for(i = 0; i <= 2; i++){
+                        if(this.record[i][0] == this.record[i][1] && this.record[i][0] == this.record[i][2]){
+                            return this.record[i][0];
+                        }
+                        else if(this.record[0][i] == this.record[1][i] && this.record[0][i] == this.record[2][i]){
+                            return this.record[0][i];
+                        }
+                    }
+
+                    if(this.record[0][0] == this.record[1][1] && this.record[0][0] == this.record[2][2]){
+                        return this.record[0][0];
+                    }
+                    else if(this.record[0][2] == this.record[1][1] && this.record[0][2] == this.record[2][0]){
+                        return this.record[0][2];
+                    }
+
+                    return '';
+                }
+            }
+
+            var flag = "";
+            var game = new OOXX();
+
+            function SetPoint(obj) {
+                //alert(obj);
+                if (obj.innerText != "_") return;
+                if (flag == "X") {
+                    flag = "O";
+                    obj.innerText = 'O';
+                }
+                else {
+                    flag = "X";
+                    obj.innerText = 'X';
+                }
+                //show
+                var label = document.getElementById('lebel1');
+                //顯示位置
+                label.innerHTML = "rowIndex: " + obj.parentElement.rowIndex + " CellIndex: " + obj.cellIndex + " --> " + obj.innerText;
+                //設定落子
+                game.setPoint(obj.parentElement.rowIndex, obj.cellIndex, obj.innerText);
+                //有人贏嗎?
+                if (game.HasWinner() != '') label.innerHTML = `<span style='color:red'>winner : ${game.HasWinner()}</span>`;
+            }
+        </script>
+    </head>
+
+    <body>
+        <h3>OOXX遊戲</h3>
+        <div style="font-size: 80px">
+            <table border="1" style="width: 400px; height:300px">
+                <tr>
+                    <td onclick="SetPoint(this);">_</td>
+                    <td onclick="SetPoint(this);">_</td>
+                    <td onclick="SetPoint(this);">_</td>
+                </tr>
+                <tr>
+                    <td onclick="SetPoint(this);">_</td>
+                    <td onclick="SetPoint(this);">_</td>
+                    <td onclick="SetPoint(this);">_</td>
+                </tr>
+                <tr>
+                    <td onclick="SetPoint(this);">_</td>
+                    <td onclick="SetPoint(this);">_</td>
+                    <td onclick="SetPoint(this);">_</td>
+                </tr>
+            </table>
+        </div>
+        <label id=lebel1>desc:</label>
+
+
+        
+
+    </body>
+
+    </html>
