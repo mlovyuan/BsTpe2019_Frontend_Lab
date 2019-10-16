@@ -40,19 +40,22 @@
 
         function leftB() {
             trans($('#leftInput').val(), "rightInput", $('#rightOption').val());
+            localStorage.setItem("record", $('#leftInput').val());
         }
 
         function rightB() {
             trans($('#rightInput').val(), "leftInput", $('#leftOption').val());
         }
 
-        function clearB() { 
+        function clearB() {
             $('.card-body textarea').val("");
-         }
+        }
+
         $(function () {
             $("#leftButton").click(leftB);
             $("#rightButton").click(rightB);
             $("#clearButton").click(clearB);
+            $('#leftInput').val(localStorage.getItem("record"));
         });
     </script>
     <title>Lab27</title>
