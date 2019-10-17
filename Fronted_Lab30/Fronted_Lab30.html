@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <script>
+        function trans(source, whenSuccess) {
+            $.ajax({
+                type: "post", //http verb
+                headers: {
+                    //http header
+                    "Authorization": "EndpointKey 800b48ad-2b8c-4ed7-a074-a28282255987",
+                    "Content-Type": "application/json"
+                },
+                url: "https://test1081016.azurewebsites.net/qnamaker/knowledgebases/b6cf7a20-5db8-4f82-989c-a4670220e610/generateAnswer",
+                data: JSON.stringify({ "question": source }), //換成你的問題 
+                dataType: "json",
+                success: whenSuccess
+                , error: function (err) {
+                    //如果有錯
+                }
+            });
+        }
+
+        function sendmsg() {
+            var html = $('#TalkContainer').html();
+            var usermsg = $('#msg').val();
+            //刷新DIV
+            $('#TalkContainer').html(html + '<br /><br />用戶 : ' + usermsg);
+            //scroll to bottom (直接到達位置底部，所以看上去好像把之前的東西往上頂)
+            $('#TalkContainer').scrollTop($('#TalkContainer')[0].scrollHeight);
+            console.log($('#TalkContainer')[0].scrollHeight);
+            $('#msg').val('');
+
+            trans(usermsg, function (ret) {
+                // console.log(ret.answers[0].answer);
+                //如果成功
+                //雖然外面有html這個變數，但是是抓取到用戶輸入前的狀態，所以要重新宣告
+                let html = $('#TalkContainer').html();
+                $('#TalkContainer').html(html + '<br /><br />客服 : ' + ret.answers[0].answer);
+                //scroll to bottom (直接到達位置底部，所以看上去好像把之前的東西往上頂)
+                $('#TalkContainer').scrollTop($('#TalkContainer')[0].scrollHeight);
+            });
+        }
+
+        $(function () {
+            $("#sendmsg").click(sendmsg);
+            //按Enter送出
+            $('#msg').keypress(function (e) {
+                if (e.keyCode == 13) {
+                    sendmsg();
+                    //怕有人一直按著不放
+                    return false;
+                }
+            });
+        });
+    </script>
+    <title>Lab30</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row align-items-center mt-5">
+            <div class="col-lg-6">
+                <div class="card  ">
+                    <!-- 卡片標題 -->
+                    <div class="card-header bg-info text-white">
+                        拉基版G器人
+                    </div>
+                    <!-- 卡片內容 -->
+                    <div class="card-body bg-light">
+                        <!-- 對談區 -->
+                        <div id="TalkContainer" style="overflow: auto; height: 300px;">
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <form class="form-inline">
+                            <input id="msg" type="text" class="form-control" style="width:85%">
+                            <button type="button" id="sendmsg" class="btn btn-info ml-1">送出</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+
+
+
+</body>
+
+</html>
