@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <script>
+        //function Caculate() {
+        //    var height = document.getElementById("height").value;
+        //    var weight = document.getElementById("weight").value;
+        //    var BMI = document.getElementById("BMI");
+        //    BMI.innerText = weight / ((height / 100) * (height / 100));
+        //}
+        var height = document.getElementById("height").value;
+        var weight = document.getElementById("weight").value;
+
+        function GetBmi(height, weight) {
+            $.ajax({
+                type: "POST",
+                url: "http://localhost:58798//api/bmi",
+                data: {
+                    "height": height,
+                    "weight": weight
+                }
+                ,
+                dataType: "json",
+                success: function (response) {
+                    $('#BMI').html(response.BMI);
+                }
+            });
+        }
+    </script>
+    <title></title>
+</head>
+<body>
+    <div class="container">
+        <div class="col-md-6">
+            <label for="height">身高</label>
+            <input type="text" name="" id="height" class="form-control">
+            <label for="weight">體重</label>
+            <input type="text" name="" id="weight" class="form-control">
+
+            <label for="BMI">結果:</label>
+            <span id="BMI"></span>
+            <br>
+            <button type="button" value="計算" onclick="GetBmi()" class="btn btn-primary">計算</button>
+        </div>
+    </div>
+</body>
+</html>
