@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-tw">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- JQ -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="http://code.jquery.com/color/jquery.color-2.1.2.min.js"></script>
+
+    <!-- bootstrap4 -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+    <title>Puzzle</title>
+    <!-- <link rel="stylesheet" href="/FrondendHackathon/puzzle/css/main.css"> -->
+    <!-- <script src="../puzzle/js/main.js"></script> -->
+
+    <style>
+        #game_object {
+            /* background-color: #442c2c;
+            height: 705px;
+            width: 705px; */
+            margin: 15px auto;
+            /* position: relative; */
+        }
+
+        #board div {
+            border: gray solid 0.5px;
+            background: url("images/kittenPuppy.jpg") no-repeat;
+            cursor: pointer;
+            position: absolute;
+        }
+    </style>
+    <script>
+        function cut() {
+            //難度為n*n
+            changeDifficulty = $("#DegreeOfDifficulty").val();
+            //設定要幾格
+            EmptySquare = changeDifficulty * changeDifficulty;
+            //設定每格大小
+            square_size = 600 / changeDifficulty;
+            //玩puzzle的板子有多大
+            //var boardSize = (square_size * changeDifficulty) + 'px';
+
+            // var sqSize = square_size + 'px';
+
+            //  Grab the id of the HTML element into which we are placing the game,Inject game board
+            $("#game_object").html('<div id="board" ></div>');
+            //這行好像有沒有沒差
+            // $('#board').css({ position: 'absolute', width: boardSize, height: boardSize, border: '10px solid gray' });
+
+            // Populate the game board's HTML container with 15 squares
+            for (var i = 0; i < EmptySquare; i++) {
+                // A dirty way to create an arbitrary DIV and append it into HTML dynamically
+                // Notice each square uses the same image. It just uses a different x/y offset for each square
+                //`${}`    利用餘數給定每行的位置
+                $('#board').append("<div style='left: " + ((i % changeDifficulty) * square_size) + "px; top: "
+                    // 利用無條件捨去給定每列高的位置 => width&height給定照片只能多大(依照該格大小) 
+                    + Math.floor(i / changeDifficulty) * square_size + "px; width: " + square_size + "px; height: "
+                    // 顯示同張照片的某個位置(background-position) 先左右(負的想成把照片往左邊拉過去) 後上下(負的想成把照片往上拉)
+                    + square_size + "px; background-position: " + (-(i % changeDifficulty) * square_size) + "px "
+                    + -Math.floor(i / changeDifficulty) * square_size + "px ' ></div>");
+            }
+
+            // Empty up which square is the starting point，給白白底
+            // EmptySquare = 16
+            $('#board').children("div:nth-child(" + EmptySquare + ")").css({ backgroundImage: "", background: "#ffffff" });
+        }
+
+        // Move() is the function that is called when a square is clicked
+        // Note that it is independent of the plugin itself which is described above
+        // It takes two parameters,
+        //     1. object handle to the square that was clicked, and
+        //     2. the width of the square
+        //PX問題 抓不到整除
+        function Move(clicked_square, square_size) {
+            // We need to locate movable tiles based on where the empty spot is,
+            // We can only move the four surrounding squares
+            var movable = false;
+            // console.log(clicked_square);
+            // Swap x/y between the clicked square and the currently empty square
+            var oldx = $('#board').children("div:nth-child(" + EmptySquare + ")").css('left');
+            var oldy = $('#board').children("div:nth-child(" + EmptySquare + ")").css('top');
+
+            var newx = $(clicked_square).css('left');
+            var newy = $(clicked_square).css('top');
+            console.log(newx);
+            //console.log($(clicked_square).css('top'));
+
+            // The clicked square is north of the empty square
+            if (oldx == newx && newy == (parseInt(oldy) - square_size) + 'px')
+                movable = true;
+
+            // The clicked square is south of the empty square
+            else if (oldx == newx && newy == (parseInt(oldy) + square_size) + 'px')
+                movable = true;
+
+            // The clicked square is west of the empty square
+            else if ((parseInt(oldx) - square_size) + 'px' == newx && newy == oldy)
+                movable = true;
+
+            // The clicked square is east of the empty square
+            else if ((parseInt(oldx) + square_size) + 'px' == newx && newy == oldy)
+                movable = true;
+
+            if (movable) {
+                // Increment zindex so the new tile is always on top of all others
+                //加了會讓被選到的方塊看起來像飄移過去(因為下面有動畫效果)，不加也可以只是視覺上比較醜，雙方圖片會直接換
+                $(clicked_square).css('z-index', zi++);
+
+                // Swap squares... Animate new square into old square position
+                $(clicked_square).animate({ left: oldx, top: oldy }, 200, function () {
+                    //Move old square into new square position
+                    $('#board').children("div:nth-child(" + EmptySquare + ")").css('left', newx);
+                    $('#board').children("div:nth-child(" + EmptySquare + ")").css('top', newy);
+                });
+            }
+        }
+
+        function BeforeStart(ZeroOne) {
+            //直接抓自己的XY
+            var oldx = $('#board').children("div:nth-child(" + EmptySquare + ")").css('left');
+            var oldy = $('#board').children("div:nth-child(" + EmptySquare + ")").css('top');
+            //左右移動
+            if (ZeroOne == 0) {
+                var newx;
+                //依據Random結果把自己XY做變化
+                if (0 < parseInt(oldx) < square_size * (changeDifficulty - 1)) {
+                    var r = Math.round(Math.random());
+                    newx = r == 1 ? (parseInt(oldx) - square_size) + 'px' : (parseInt(oldx) + square_size) + 'px';
+                }
+                else if (parseInt(oldx) == 0) {
+                    newx = (parseInt(oldx) + square_size) + 'px';
+                }
+                else {
+                    newx = (parseInt(oldx) - square_size) + 'px';
+                }
+                //抓要被交換的格子
+                for (var i = 1; i <= EmptySquare; i++) {
+                    //如果找到剛好是要被交換的，確認
+                    if ($('#board').children("div:nth-child(" + i + ")").css('left') == newx &&
+                        $('#board').children("div:nth-child(" + i + ")").css('top') == oldy) {
+                        // console.log($('#board').children("div:nth-child(" + i + ")"));
+                        // console.log($('#board').children('div').get(i-1));
+                        // console.log($(`#board div:nth-child(${i})`));
+                        Move($('#board').children('div').get(i - 1), square_size)
+                        break;
+                    };
+                }
+            }
+            //上下移動
+            else {
+                var newx;
+                //依據Random結果把自己XY做變化
+                if (0 < parseInt(oldy) < square_size * (changeDifficulty - 1)) {
+                    var r = Math.round(Math.random());
+                    newy = r == 1 ? (parseInt(oldy) - square_size) + 'px' : (parseInt(oldy) + square_size) + 'px';
+                }
+                else if (parseInt(oldy) == 0) {
+                    newy = (parseInt(oldy) + square_size) + 'px';
+                }
+                else {
+                    newy = (parseInt(oldy) - square_size) + 'px';
+                }
+                //抓要被交換的格子
+                for (var i = 1; i <= EmptySquare; i++) {
+                    //如果找到剛好是要被交換的，確認
+                    if ($('#board').children("div:nth-child(" + i + ")").css('left') == oldx &&
+                        $('#board').children("div:nth-child(" + i + ")").css('top') == newy) {
+                        Move($('#board').children('div').get(i - 1), square_size)
+                        break;
+                    };
+                }
+            }
+        }
+        
+        // function randomCard() {
+        //     BeforeStart(Math.round(Math.random()));
+        //     count++;
+        //     if (count < 40) {
+        //         // console.log(count);
+        //         setTimeout(randomCard, 300);
+        //     }
+        // }
+        function randomCard() {
+            $('#ShowStart').text('讓電腦思考要洗到甚麼程度!');
+            setTimeout(() => {
+                BeforeStart(Math.round(Math.random()));
+                count++;
+                if (count > 70) {
+                    $('#ShowStart').text('洗牌結束!');
+                    console.log(count);
+                    return;
+                }
+                randomCard();
+            }, 300);
+                // 
+            
+        }
+        function start() {
+            $('#board').children('div').click(function () {
+                Move(this, square_size);
+            });
+        }
+
+        $(function () {
+            // When the squares swap places, the moving square must always appear on top
+            zi = 1; // We increment z-index each time a square is shifted
+            cut();
+            $('#start').click(start);
+            $('#randomCard').click(function () {
+                count = 0;
+                randomCard();
+            });
+            $('#DegreeOfDifficulty').change(cut);
+        });
+
+
+    </script>
+</head>
+
+<body>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-5" id="game_object">
+
+            </div>
+            <div class="col-md-3 float-right">
+                <div class="mt-5">
+                    <h5>請選擇難度</h5>
+                </div>
+                <div>
+                    <select name="DegreeOfDifficulty" id="DegreeOfDifficulty">
+                        <option value="3" selected>輕鬆</option>
+                        <option value="4">需要稍微思考</option>
+                        <option value="5">動動腦</option>
+                    </select>
+                </div>
+                <br>
+                <h5>先點選『洗牌』後， <br>再點擊『開始』鍵遊戲</h5>
+                <button type="button" class="btn btn-primary" id="start">開始</button>
+                <button type="button" class="btn btn-primary" id="randomCard">洗牌</button>                
+                <h5 id="ShowStart" class="mt-5"></h5>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

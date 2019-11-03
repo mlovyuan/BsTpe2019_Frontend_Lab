@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Simple Map</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <style>
+        /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+        #map {
+            height: 100%;
+        }
+
+        /* Optional: Makes the sample page fill the window. */
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div id="map"></div>
+    <script>
+        $(function () {
+
+        })
+        var map;
+        function initMap() {
+            //經緯度
+            var myLatlng = new google.maps.LatLng(25.0424198, 121.5376861);
+            var mapOptions = {
+                //縮放比例
+                zoom: 18,
+                center: myLatlng,
+                mapTypeId: 'roadmap'
+            };
+            var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+            var marker = new google.maps.Marker({
+                position: myLatlng,
+                map: map,
+                title: 'Hello World!'
+            });
+
+            //the set of icons
+            var icons = {
+                ubike: {
+                    icon: 'bike.png'
+                },
+                orangebike: {
+                    icon: 'bike_orange.png'
+                }
+            };
+
+            var features = GetUbikeLocation();
+
+            // Create markers.(show icon on the map)
+            for (var i = 0; i < features.length; i++) {
+                var marker = new google.maps.Marker({
+                    position: features[i].position,
+                    //icons[ubike].icon
+                    icon: icons[features[i].type].icon,
+                    map: map,
+                    title: features[i].title
+                });
+            }
+        }
+        // get ubike location
+        function GetUbikeLocation() {
+            /*[
+            {
+                position: myLatlng,
+                type: 'ubike'
+            }
+        ]*/
+            var data = [];
+            var OpenData = GetOpenData();
+            console.log('OpenData is ', OpenData);
+
+            // myLatlng = new google.maps.LatLng(25.0424198, 121.5376861);
+            $.each(OpenData.retVal, function (i, item) {
+                // console.log('i is ', i);
+                // console.log('item is ', item);
+                var singleItem = {
+                    position: new google.maps.LatLng(item.lat, item.lng),
+                    type: 'ubike',
+                    title: item.sbi + '/' + item.tot
+                }
+                if (item.sbi < 10) {
+                    singleItem.type = 'orangebike';
+                }
+                data.push(singleItem);
+            });
+            return data;
+        }
+        //Get ubike json opendata
+        function GetOpenData() {
+            var ubikelocation;
+            $.ajax({
+                type: "Get",
+                url: "https://tcgbusfs.blob.core.windows.net/blobyoubike/YouBikeTP.json",
+                success: function (response) {
+                    // console.log(response);
+                    ubikelocation = response;
+                },
+                error: function () {
+                    alert('fail');
+                },
+                //讓ubikelocation不會因為非同步關係在位抓到資料前馬上先回傳值回去
+                async: false
+            });
+            return ubikelocation;
+        }
+    </script>
+    <!-- 2020/10/23 dead-->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAlKWP4uWjQIR3WDAWLAu6rUhBfc3_ppag&callback=initMap"
+        async defer></script>
+</body>
+
+</html>

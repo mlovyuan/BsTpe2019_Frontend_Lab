@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Simple Map</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <style>
+        /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+        #map {
+            height: 100%;
+        }
+
+        /* Optional: Makes the sample page fill the window. */
+        html,
+        body {
+            background-color: #444;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container-all {
+            min-height: 100%;
+            height: 100%;
+            display: flex;
+        }
+
+        .left {
+            float: left;
+            flex: 1;
+            width: 15%;
+        }
+
+        .right {
+            float: right;
+            flex-grow: 4;
+            flex-basis: 0%;
+            width: 85%;
+        }
+
+        .nav-container {
+            margin-top: 10px;
+            box-shadow: 0 2px 2px 2px black;
+            transition: all 0.3s linear;
+        }
+
+        ul {
+            margin: 0;
+            padding: 0;
+            flex-direction: column;
+        }
+
+        li {
+            position: relative;
+            margin: 5px;
+            background: linear-gradient(#292929, #242424);
+            text-align: center;
+        }
+
+        li:hover {
+            cursor: pointer;
+        }
+
+        .white {
+            color: white;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.4.1.js"
+        integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div class="container-all">
+        <div class="nav-container left">
+            <ul class="nav" id="ul_area">
+
+                <li id="all">
+                    <span class="white">顯示全部</span>
+                </li>
+
+            </ul>
+        </div>
+
+
+        <div id="map" class="right"></div>
+    </div>
+
+
+    <script>
+        var map;
+        var features;
+        var currentMarkers = [];
+        var Area = [];
+        var icons = {
+            ubike: {
+                icon: 'bike.png' //圖片位址
+            },
+            bluebike: {
+                icon: 'bike_blue.png' //圖片位址
+            }
+        };
+
+        $(function () {
+
+        })
+
+        function initMap() {
+            //依照文件給的格式設定經緯度
+            var myLatLng = { //25.0427205,121.5376597
+                lat: 25.0427205,
+                lng: 121.5376597
+            };
+
+            //參考   :https://developers.google.com/maps/documentation/javascript/reference/map
+            //裡面有 :Map(mapDiv[, opts])
+            //第一個是html元素 第二個是[]collection裡面放參數
+            map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 15,
+                center: myLatLng
+            });
+
+            //參考:https://developers.google.com/maps/documentation/javascript/reference/marker
+            //裡面有:Marker([opts])
+            //只有[]collection裡面放參數
+            var marker = new google.maps.Marker({
+                position: myLatLng,
+                map: map,
+                title: 'Hello World!'
+            });
+
+            features = GetUbikeLocation(); //OpenData取得Ubike位置 , features
+            DrawMarkersOnMap("顯示全部"); // 呼叫顯示Markers的方法
+            DisplayArea(Area); //根據OpenData的資料顯示左方選單
+            ClickAreaEvent(); //給予左方選單Click事件 , 方便顯示某區的Bike
+        }
+
+        //根據google文件給的方法 , 用marker.setMap(null); 清除markers
+        //所以要預先記錄起來所有的Markers
+        //刪除marker文件:https://developers.google.com/maps/documentation/javascript/markers
+        function RemoveAllMarkers() {
+            $.each(currentMarkers, function (i, item) {
+                item.setMap(null);
+            });
+        }
+
+        //將Markers顯示在Map上面
+        function DrawMarkersOnMap(target) {
+
+            //先清除原本的Markers
+            RemoveAllMarkers();
+
+            // Create markers. 將設定好的位址和icon顯示在map上
+            for (var i = 0; i < features.length; i++) {
+
+                //將不重複的地區，加入準備顯示的area array 
+                //這邊是從Opendata取得所有地區元素 將不同的地區加入Area array裡面
+                if (Area.indexOf(features[i].area) == -1) {
+                    Area.push(features[i].area);
+                }
+
+                //這裡的if , else if 是用來判斷:要顯示單一地區的 還是全部都顯示
+                //顯示全部 不離開單次迴圈
+                //如果是 顯示某區域 , 但和選擇的區域不一致 換下一個地點繼續run
+                if (target == "顯示全部") {
+
+                } else if (target != features[i].area) {
+                    continue;
+                }
+
+                //按照google map document給的格式顯示
+                var marker = new google.maps.Marker({
+                    //讀取 feature的位置資訊
+                    position: features[i].position,
+                    //讀取 icons的位置資訊
+                    icon: icons[features[i].type].icon,
+                    //顯示剛設定的資料在地圖上
+                    map: map,
+                    //讀取 feature的車輛資訊
+                    title: features[i].title
+                });
+
+                //紀錄現有的Marker , 方便刪除
+                currentMarkers.push(marker);
+            };
+        }
+
+        //取得Ubike位置(經緯度)
+        function GetUbikeLocation() {
+            //原本的格式長這樣 , 把它修改成我們需要的格式
+            //範例:https://developers.google.com/maps/documentation/javascript/custom-markers
+            /*var features = [
+            {
+                position: new google.maps.LatLng(25.0427205, 121.5376597), 
+                type: 'ubike'
+            }
+            ]
+            */
+            var data = []; //我們需要的格式
+
+            //呼叫OpenData
+            var Opendata = GetOpenData();
+            console.log('Opendata is', Opendata);
+
+            //$.each(collection[] , function(key,value){});
+            //參考:https://api.jquery.com/jQuery.each/
+            //顯示+給予 每一個item的值
+            $.each(Opendata.retVal, function (i, item) {
+                console.log('i is ', i);
+                console.log('item is ', item);
+                //singleItem是依照google給的格式 自定義的資料 可以自行修改
+                var singleItem = {
+                    position: new google.maps.LatLng(item.lat, item.lng),
+                    type: 'ubike',
+                    title: item.sbi + ' / ' + item.tot,
+                    area: item.sarea,
+                };
+                console.log('singleItem is ', singleItem);
+                //設定小於10輛的車 用藍色腳踏車icon:
+                if (item.sbi < 10) {
+                    singleItem.type = 'bluebike';
+                }
+                //將資料加入collection
+                data.push(singleItem);
+            });
+            return data;
+        }
+
+        //取得OpenData
+        function GetOpenData() {
+            var ubikelocation;
+
+            //ajax可以參考別人寫的blog : https://ithelp.ithome.com.tw/articles/10192450
+            //$.ajax({參數1,參數2}) ; 裡面放參數 , 用逗號區隔
+
+            $.ajax({
+                type: 'Get',
+                url: 'https://tcgbusfs.blob.core.windows.net/blobyoubike/YouBikeTP.json',
+                success: function (data) {
+                    ubikelocation = data;
+                    console.log('data is ', data);
+                },
+                error: function () {
+                    alert('fail');
+                },
+                async: false, //非常重要
+            });
+
+            return ubikelocation;
+        }
+
+        function DisplayArea(Area) {
+            $.each(Area, function (i, item) {
+                /* 將格式複製過來對照 比較好思考
+                <li>
+                    <span class="white">
+                        XX區
+                    </span>
+                </li>
+                */
+                //用法: $('#id').append( $('<li>') ); li可以替換成其他元素
+                //用法: $('#id').append( $('<li>').append( $('<span>') ) );  //先產生li,再產生span到li裡面
+                //用法: $('#id').append( $('<li>').append( $('<span>').addClass('white') ) );  //給class="white"
+                //用法: $('#id').append( $('<li>').append( $('<span>').addClass('white').text(值) ) );  //給值
+                $('#ul_area').append(
+                    $('<li>').append(
+                        $('<span>').addClass('white')
+                        .text(item)
+                    )
+                    .attr('id', i)
+                );
+            });
+        }
+
+        //給予 點按某個元素事件 該元素有很多個 , 是 #ul_area 底下的所有<li>
+        function ClickAreaEvent() {
+            //因為是每一個都要 , 所以用each方法 , <ul>底下的所有<li>
+            $.each($('#ul_area').children(), function (i, item) {
+                //每個<li> 給予click事件
+                $('#' + item.id).on('click', function () {
+                    //找到 你點的元素(this)裡面第一個<span>的text
+                    var click_area = $(this).find('span:first').text(); //p.s. 其實不應該只抓元素的text , 應該給個id,依照id對應到的value去查詢 , 但這樣寫起來比較方便
+                    console.log('you click click_area is', click_area);
+                    //根據你點了該元素的text (XX區) 傳入顯示marker的方法
+                    DrawMarkersOnMap(click_area);
+                });
+            })
+        }
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAlKWP4uWjQIR3WDAWLAu6rUhBfc3_ppag&callback=initMap"
+        async defer></script>
+</body>
+
+</html>
