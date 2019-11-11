@@ -1,0 +1,16 @@
+a.card:hover{
+    text-decoration: none;
+}
+
+.news-list li::before {
+    content: "・";
+    color: #ffffff;
+}
+@media screen and (max-width: 560px) {
+    #carouselExampleIndicators h1 {
+    font-size: 2rem;
+    }
+    #carouselExampleIndicators .btn {
+    margin-top: 0 !important;
+    }
+}
